@@ -74,6 +74,12 @@ public class UploadController {
             while((read = is.read(bytes))!=-1) {
                 fos.write(bytes, 0, read);
             }
+            //try {
+                file.setFileData(bytes);
+            //} catch (SQLException e) {
+            //    uploadError = e.getMessage();
+            //    e.printStackTrace();
+            //}
             file.setFileName(fileUpload.getOriginalFilename());
             file.setFileSize(newFile.length()+"");
             file.setUserId(user.getUserId());
@@ -87,9 +93,11 @@ public class UploadController {
                 if (is != null) is.close();
                 if (fos != null) fos.close();
             } catch (IOException e) {
+                uploadError = e.getMessage();
                 e.printStackTrace();
             }
         }
+        model.addAttribute("uploadError", uploadError);
         model.addAttribute("encryptionService", encryptionService);
         model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
         model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));

@@ -12,7 +12,7 @@
         <div class="container">
             <div id="logoutDiv">
                 <form action="#" th:action="@{/logout}" method="POST">
-                    <button type="submit" class="btn btn-secondary float-right">Logout</button>
+                    <button id="logoutButton" type="submit" class="btn btn-secondary float-right">Logout</button>
                 </form>
             </div>
             <div id="contentDiv" style="clear: right;">
@@ -83,11 +83,11 @@
                                     <div th:each="note : ${notes}" >
                                         <tr>
                                             <td>
-                                                <button type="button" class="btn btn-success" th:onclick="showNoteModal([[${note.noteId}]], [[${note.noteTitle}]], [[${note.noteDescription}]])">Edit</button>
-                                                <a class="btn btn-danger" th:href="@{/notes/delete/{id}(id=${note.noteId})}">Delete</a>
+                                                <button id="noteEditButtons" type="button" class="btn btn-success" th:onclick="showNoteModal([[${note.noteId}]], [[${note.noteTitle}]], [[${note.noteDescription}]])">Edit</button>
+                                                <a id="noteDeleteButtons" class="btn btn-danger" th:href="@{/notes/delete/{id}(id=${note.noteId})}">Delete</a>
                                             </td>
-                                            <th scope="row" th:text="${note.noteTitle}">Example Note Title</th>
-                                            <td th:text="${note.noteDescription}">Example Note Description </td>
+                                            <th id="noteTitles" scope="row" th:text="${note.noteTitle}">Example Note Title</th>
+                                            <td id="noteDescriptions" th:text="${note.noteDescription}">Example Note Description </td>
                                         </tr>
                                     </div>
                                 </tbody>
@@ -144,12 +144,12 @@
                                     <div th:each="credential : ${credentials}">
                                         <tr>
                                             <td>
-                                                <button type="button" class="btn btn-success" th:onclick="showCredentialModal([[${credential.credentialId}]], [[${credential.url}]], [[${credential.username}]], [[${encryptionService.decryptValue(credential.password, credential.key)}]])">Edit</button>
-                                                <a class="btn btn-danger" th:href="@{/credentials/delete/{id}(id=${credential.credentialId})}">Delete</a>
+                                                <button id="credentialEditButtons" type="button" class="btn btn-success" th:onclick="showCredentialModal([[${credential.credentialId}]], [[${credential.url}]], [[${credential.username}]], [[${encryptionService.decryptValue(credential.password, credential.key)}]])">Edit</button>
+                                                <a id="credentialDeleteButtons" class="btn btn-danger" th:href="@{/credentials/delete/{id}(id=${credential.credentialId})}">Delete</a>
                                             </td>
-                                            <th scope="row" th:text="${credential.url}">Example Credential URL</th>
-                                            <td th:text="${credential.username}">Example Credential Username</td>
-                                            <td th:text="${credential.password}">Example Credential Password</td>
+                                            <th id="credentialUrls" scope="row" th:text="${credential.url}">Example Credential URL</th>
+                                            <td id="credentialUsernames" th:text="${credential.username}">Example Credential Username</td>
+                                            <td id="credentialPasswords" th:text="${credential.password}">Example Credential Password</td>
                                         </tr>
                                     </div>
                                 </tbody>
@@ -185,7 +185,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary" onclick="$('#credentialSubmit').click();">Save changes</button>
+                                        <button id="credentialSubmit" type="button" class="btn btn-primary" onclick="$('#credentialSubmit').click();">Save changes</button>
                                     </div>
                                 </div>
                             </div>
