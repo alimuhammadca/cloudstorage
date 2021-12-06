@@ -6,6 +6,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 public class SignupPage {
+
     @FindBy(id = "error-msg")
     private WebElement errorMessage;
 
@@ -37,6 +38,14 @@ public class SignupPage {
 
     public String getSuccessMessage() {
         return successMessage.getText();
+    }
+
+    public void setFirstName(String firstName) {
+        firstNameValueField.sendKeys(firstName);
+    }
+
+    public void setLastName(String lastName) {
+        lastNameValueField.sendKeys(lastName);
     }
 
     public void setUsername(String username) {

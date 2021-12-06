@@ -1,10 +1,11 @@
 package com.udacity.jwdnd.course1.cloudstorage.pages;
 
-import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+
+import javax.validation.constraints.NotNull;
 
 public class NotePage {
     @FindBy(id = "noteEditButtons")
