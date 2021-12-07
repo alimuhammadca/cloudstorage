@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
+import com.udacity.jwdnd.course1.cloudstorage.pages.LoginPage;
 import com.udacity.jwdnd.course1.cloudstorage.pages.SignupPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterAll;
@@ -13,14 +14,15 @@ import org.springframework.boot.web.server.LocalServerPort;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SignupTests {
-    public static final String SIGNUP_MESSAGE = "You successfully signed up!";
-    public static final String USER_ALREADY_EXISTS = "The username already exists.";
+public class UnAuthorizedLoginTests {
+    public static final String LOGIN_ERROR_MESSAGE = "Invalid username or password";
+    public static final String LOGOUT_MESSAGE = "You have been logged out";
 
     @LocalServerPort
     private Integer port;
 
     private static WebDriver webDriver;
+    private LoginPage loginPage;
     private SignupPage signupPage;
 
     @BeforeAll
@@ -36,22 +38,35 @@ public class SignupTests {
 
     @BeforeEach
     public void beforeEach() {
-        webDriver.get("http://localhost:" + port + "/signup");
-        signupPage = new SignupPage(webDriver);
+        webDriver.get("http://localhost:" + port + "/login");
+        loginPage = new LoginPage(webDriver);
     }
 
-    /**
-     * This method tests user signup
-     */
     @Test
-    public void userSignupTest() {
-        signupPage.setFirstName("John");
-        signupPage.setLastName("Doe");
-        signupPage.setUsername("sa");
-        signupPage.setPassword("123");
-        signupPage.clickSignup();
-        int n = SIGNUP_MESSAGE.length();
-        assertEquals(SIGNUP_MESSAGE, signupPage.getSuccessMessage().substring(0, n));
+    public void unregisteredUserTest() {
+        loginPage.setUsername("sa");
+        loginPage.setPassword("123");
+        loginPage.clickLogin();
+        assertEquals(LOGIN_ERROR_MESSAGE, loginPage.getErrorMessage());
     }
+
+    @Test
+    public void accessHomePage() {
+        webDriver.get("http://localhost:" + port + "/home");
+        assertEquals("Login", webDriver.getTitle());
+    }
+
+    @Test
+    public void accessLoginPage() {
+        assertEquals("Login", webDriver.getTitle());
+    }
+
+    @Test
+    public void accessSignupPage() {
+        webDriver.get("http://localhost:" + port + "/signup");
+        assertEquals("Sign Up", webDriver.getTitle());
+    }
+
+
 
 }

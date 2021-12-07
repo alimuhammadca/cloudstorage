@@ -25,6 +25,9 @@ public class LoginPage {
     @FindBy(id = "signup-link")
     private WebElement signupLink;
 
+    @FindBy(id = "loginBody")
+    private WebElement loginBody;
+
     public LoginPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
     }
@@ -51,5 +54,9 @@ public class LoginPage {
 
     public void clickSignup() {
         signupLink.click();
+    }
+
+    public Boolean loginBodyExists() {
+        return loginBody != null;
     }
 }

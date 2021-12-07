@@ -66,7 +66,7 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
-                        <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showNoteModal()">
+                        <button id="addNoteButton" style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showNoteModal()">
                             + Add a New Note
                         </button>
 
@@ -83,11 +83,11 @@
                                     <div th:each="note : ${notes}" >
                                         <tr>
                                             <td>
-                                                <button id="noteEditButtons" type="button" class="btn btn-success" th:onclick="showNoteModal([[${note.noteId}]], [[${note.noteTitle}]], [[${note.noteDescription}]])">Edit</button>
-                                                <a id="noteDeleteButtons" class="btn btn-danger" th:href="@{/notes/delete/{id}(id=${note.noteId})}">Delete</a>
+                                                <button id="noteEditButton" type="button" class="btn btn-success" th:onclick="showNoteModal([[${note.noteId}]], [[${note.noteTitle}]], [[${note.noteDescription}]])">Edit</button>
+                                                <a id="noteDeleteButton" class="btn btn-danger" th:href="@{/notes/delete/{id}(id=${note.noteId})}">Delete</a>
                                             </td>
-                                            <th id="noteTitles" scope="row" th:text="${note.noteTitle}">Example Note Title</th>
-                                            <td id="noteDescriptions" th:text="${note.noteDescription}">Example Note Description </td>
+                                            <th id="noteTitle" scope="row" th:text="${note.noteTitle}">Example Note Title</th>
+                                            <td id="noteDescription" th:text="${note.noteDescription}">Example Note Description </td>
                                         </tr>
                                     </div>
                                 </tbody>
