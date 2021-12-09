@@ -40,4 +40,12 @@ public class CredentialService {
     public List<Credential> getCredentials(Integer userId) {
         return credentialMapper.getAllCredentials(userId);
     }
+
+    public Credential getCredentialByUsername(String username) {
+        return credentialMapper.getCredentialByUsername(username);
+    }
+
+    public String getCredentialKey(Integer id) {
+        return credentialMapper.getCredential(id).getKey();
+    }
 }

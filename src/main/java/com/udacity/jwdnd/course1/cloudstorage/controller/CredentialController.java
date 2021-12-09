@@ -42,8 +42,15 @@ public class CredentialController {
 
         SecureRandom random = new SecureRandom();
         byte[] key = new byte[16];
-        random.nextBytes(key);
-        String encodedKey = Base64.getEncoder().encodeToString(key);
+
+        String encodedKey = null;
+        if (credential.getCredentialId() == null) {
+            random.nextBytes(key);
+            encodedKey = Base64.getEncoder().encodeToString(key);
+        } else {
+            encodedKey = credentialService.getCredentialKey(credential.getCredentialId());
+        }
+
         String encodedPassword = this.encryptionService.encryptValue(credential.getPassword(), encodedKey);
         credential.setKey(encodedKey);
         credential.setPassword(encodedPassword);

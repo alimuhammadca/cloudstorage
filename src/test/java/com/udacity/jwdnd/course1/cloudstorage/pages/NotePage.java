@@ -5,9 +5,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import javax.validation.constraints.NotNull;
-import java.util.List;
-
 public class NotePage {
     @FindBy(id = "noteEditButton")
     private WebElement noteEditButton;
@@ -33,7 +30,7 @@ public class NotePage {
     @FindBy(id = "note-description")
     private WebElement noteDescriptionValue;
 
-    @FindBy(id = "noteSubmit")
+    @FindBy(id = "saveNote")
     private WebElement noteSubmitButton;
 
     public NotePage(WebDriver driver) {
@@ -63,4 +60,13 @@ public class NotePage {
     public String getNoteDescription() {
         return noteDescription.getText();
     }
+
+    public void clickNoteEdit() {
+        noteEditButton.click();
+    }
+
+    public void clickNoteDelete() {
+        noteDeleteButton.click();
+    }
+
 }
