@@ -5,14 +5,14 @@ import com.udacity.jwdnd.course1.cloudstorage.pages.*;
 import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.services.EncryptionService;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CredentialTests {
 
     @LocalServerPort
@@ -56,7 +57,8 @@ public class CredentialTests {
     }
 
     @Test
-    public void credentialIntegrationTest() {
+    @Order(1)
+    public void credentialSignupTest() {
         //Signup a new user
         webDriver.get("http://localhost:" + port + "/signup");
         signupPage = new SignupPage(webDriver);
@@ -65,7 +67,13 @@ public class CredentialTests {
         signupPage.setUsername("sa");
         signupPage.setPassword("123");
         signupPage.clickSignup();
+        webDriver.get("http://localhost:" + port + "/login");
+        assertEquals("Login", webDriver.getTitle());
+    }
 
+    @Test
+    @Order(2)
+    public void credentialLoginTest() {
         //Sign-in the user
         webDriver.get("http://localhost:" + port + "/login");
         loginPage = new LoginPage(webDriver);
@@ -75,6 +83,11 @@ public class CredentialTests {
 
         //verify that the authenticated user can access home page
         assertEquals("Home", webDriver.getTitle());
+    }
+
+    @Test
+    @Order(3)
+    public void credentialAddTest() {
 
         //move to credentials tab
         homePage = new HomePage(webDriver);
@@ -93,15 +106,21 @@ public class CredentialTests {
         homePage.clickCredentialsTab();
         delay(1000);
 
-        //verify that the new note is listed
+        //verify that the new credential is listed
         assertEquals("url 1", credentialPage.getCredentialUrl());
         assertEquals("username 1", credentialPage.getCredentialUsername());
         Credential credential = credentialService.getCredentialByUsername("username 1");
         String key = credential.getKey();
         assertEquals(encryptionService.encryptValue("password 1", key),
                 credentialPage.getCredentialPassword());
+    }
+
+    @Test
+    @Order(4)
+    public void credentialEditTest() {
 
         //edit the credentials
+        credentialPage = new CredentialPage(webDriver);
         credentialPage.clickCredentialEdit();
         delay(1000);
 
@@ -114,19 +133,25 @@ public class CredentialTests {
         credentialPage.setCredentialPasswordValue("password 2");
         credentialPage.clickCredentialSubmit();
         delay(1000);
+        homePage = new HomePage(webDriver);
         homePage.clickCredentialsTab();
         delay(1000);
 
         //verify that the changes are listed in the credentials list
         assertEquals("url 2", credentialPage.getCredentialUrl());
         assertEquals("username 2", credentialPage.getCredentialUsername());
-        key = credential.getKey();
+        Credential credential = credentialService.getCredentialByUsername("username 2");
+        String key = credential.getKey();
         assertEquals(encryptionService.encryptValue("password 2", key),
                 credentialPage.getCredentialPassword());
+    }
 
+    @Test
+    @Order(5)
+    public void credentialDeleteTest() {
         //delete the credentials
+        credentialPage = new CredentialPage(webDriver);
         credentialPage.clickCredentialDelete();
-        delay(1000);
 
         //verify that the set of credentials is no longer visible
         assertThrows(NoSuchElementException.class, ()->credentialPage.getCredentialUrl());

@@ -38,10 +38,12 @@ public class NotePage {
     }
 
     public void setNoteTitle(String title) {
+        noteTitleValue.clear();
         noteTitleValue.sendKeys(title);
     }
 
     public void setNoteDescription(String description) {
+        noteDescriptionValue.clear();
         noteDescriptionValue.sendKeys(description);
     }
 

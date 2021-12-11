@@ -5,10 +5,7 @@ import com.udacity.jwdnd.course1.cloudstorage.pages.LoginPage;
 import com.udacity.jwdnd.course1.cloudstorage.pages.NotePage;
 import com.udacity.jwdnd.course1.cloudstorage.pages.SignupPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class NoteTests {
 
     @LocalServerPort
@@ -43,7 +41,8 @@ public class NoteTests {
     }
 
     @Test
-    public void notesIntegrationTest() {
+    @Order(1)
+    public void notesSignupTest() {
         //Signup a new user
         webDriver.get("http://localhost:" + port + "/signup");
         signupPage = new SignupPage(webDriver);
@@ -52,7 +51,11 @@ public class NoteTests {
         signupPage.setUsername("sa");
         signupPage.setPassword("123");
         signupPage.clickSignup();
+    }
 
+    @Test
+    @Order(2)
+    public void notesLoginTest() {
         //Sign-in the user
         webDriver.get("http://localhost:" + port + "/login");
         loginPage = new LoginPage(webDriver);
@@ -63,6 +66,11 @@ public class NoteTests {
         //verify that the authenticated user can access home page
         assertEquals("Home", webDriver.getTitle());
 
+    }
+
+    @Test
+    @Order(3)
+    public void notesAddTest() {
         //move to notes tab
         homePage = new HomePage(webDriver);
         homePage.clickNotesTab();
@@ -83,21 +91,34 @@ public class NoteTests {
         assertEquals("title 1", notePage.getNoteTitle());
         assertEquals("desc 1",notePage.getNoteDescription());
 
+    }
+
+    @Test
+    @Order(4)
+    public void notesEditTest() {
         //edit the note
+        notePage = new NotePage(webDriver);
         notePage.clickNoteEdit();
         delay(1000);
         notePage.setNoteTitle("title 2");
         notePage.setNoteDescription("desc 2");
         notePage.clickNoteSubmit();
         delay(1000);
+        homePage = new HomePage(webDriver);
         homePage.clickNotesTab();
         delay(1000);
 
         //verify that the changes are listed in the notes list
-        assertEquals("title 1title 2", notePage.getNoteTitle());
-        assertEquals("desc 1desc 2", notePage.getNoteDescription());
+        assertEquals("title 2", notePage.getNoteTitle());
+        assertEquals("desc 2", notePage.getNoteDescription());
 
+    }
+
+    @Test
+    @Order(5)
+    public void notesDeleteTest() {
         //delete the note
+        notePage = new NotePage(webDriver);
         notePage.clickNoteDelete();
         delay(1000);
 
