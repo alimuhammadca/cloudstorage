@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
 import java.security.SecureRandom;
 import java.util.Base64;
 
@@ -59,15 +58,8 @@ public class CredentialController {
             this.credentialService.addCredential(credential);
         else
             this.credentialService.updateCredential(credential);
-        credential.setKey("");
-        credential.setUrl("");
-        credential.setUsername("");
-        credential.setPassword("");
-        model.addAttribute("encryptionService", encryptionService);
-        model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
-        model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
-        model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
-        return "home";
+        model.addAttribute("success", Boolean.TRUE);
+        return "result.html";
     }
 
     @GetMapping("/credentials/delete/{credentialId}")
@@ -77,9 +69,7 @@ public class CredentialController {
         User user = this.userService.getUser(authentication.getName());
         credential.setUserId(user.getUserId());
         this.credentialService.deleteCredential(credentialId);
-        model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
-        model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
-        model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
-        return "home";
+        model.addAttribute("success", Boolean.TRUE);
+        return "result.html";
     }
 }

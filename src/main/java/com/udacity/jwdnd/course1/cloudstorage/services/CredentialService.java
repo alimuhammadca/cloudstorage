@@ -44,4 +44,5 @@ public class CredentialService {
     public String getCredentialKey(Integer id) {
         return credentialMapper.getCredential(id).getKey();
     }
+
 }

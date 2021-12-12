@@ -3,10 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage.controller;
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
-import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
-import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
-import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
-import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
+import com.udacity.jwdnd.course1.cloudstorage.services.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,19 +18,24 @@ public class HomeController {
     private CredentialService credentialService;
     private UserService userService;
     private FileService fileService;
+    private EncryptionService encryptionService;
 
     public HomeController(UserService userService, NoteService noteService,
                           CredentialService credentialService,
-                          FileService fileService) {
+                          FileService fileService,
+                          EncryptionService encryptionService) {
         this.userService = userService;
         this.noteService = noteService;
         this.credentialService = credentialService;
         this.fileService = fileService;
+        this.encryptionService = encryptionService;
     }
 
     @GetMapping
     public String getHomePage(Authentication authentication, Note note, Credential credential, Model model) {
         User user = this.userService.getUser(authentication.getName());
+
+        model.addAttribute("encryptionService", encryptionService);
         model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
         model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
         model.addAttribute("files", this.fileService.getFiles(user.getUserId()));

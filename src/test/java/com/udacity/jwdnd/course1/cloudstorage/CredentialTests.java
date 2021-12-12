@@ -32,6 +32,7 @@ public class CredentialTests {
     private SignupPage signupPage;
     private CredentialPage credentialPage;
     private HomePage homePage;
+    private ResultPage resultPage;
     private CredentialService credentialService;
     private EncryptionService encryptionService;
 
@@ -106,6 +107,11 @@ public class CredentialTests {
         //homePage.clickCredentialsTab();
         delay(1000);
 
+        //result page continue
+        resultPage = new ResultPage(webDriver);
+        resultPage.clickSuccessContinue();
+        delay(1000);
+
         //verify that the new credential is listed
         assertEquals("url 1", credentialPage.getCredentialUrl());
         assertEquals("username 1", credentialPage.getCredentialUsername());
@@ -133,9 +139,15 @@ public class CredentialTests {
         credentialPage.setCredentialPasswordValue("password 2");
         credentialPage.clickCredentialSubmit();
         delay(1000);
-        homePage = new HomePage(webDriver);
-        homePage.clickCredentialsTab();
+
+        //result page continue
+        resultPage = new ResultPage(webDriver);
+        resultPage.clickSuccessContinue();
         delay(1000);
+
+        //homePage = new HomePage(webDriver);
+        //homePage.clickCredentialsTab();
+        //delay(1000);
 
         //verify that the changes are listed in the credentials list
         assertEquals("url 2", credentialPage.getCredentialUrl());
@@ -152,6 +164,12 @@ public class CredentialTests {
         //delete the credentials
         credentialPage = new CredentialPage(webDriver);
         credentialPage.clickCredentialDelete();
+        delay(1000);
+
+        //result page continue
+        resultPage = new ResultPage(webDriver);
+        resultPage.clickSuccessContinue();
+        delay(1000);
 
         //verify that the set of credentials is no longer visible
         assertThrows(NoSuchElementException.class, ()->credentialPage.getCredentialUrl());
