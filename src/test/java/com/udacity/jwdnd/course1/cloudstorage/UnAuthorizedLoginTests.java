@@ -66,7 +66,4 @@ public class UnAuthorizedLoginTests {
         webDriver.get("http://localhost:" + port + "/signup");
         assertEquals("Sign Up", webDriver.getTitle());
     }
-
-
-
 }

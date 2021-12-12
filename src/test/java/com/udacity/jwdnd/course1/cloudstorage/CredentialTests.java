@@ -103,7 +103,7 @@ public class CredentialTests {
         credentialPage.setCredentialPasswordValue("password 1");
         delay(1000);
         credentialPage.clickCredentialSubmit();
-        homePage.clickCredentialsTab();
+        //homePage.clickCredentialsTab();
         delay(1000);
 
         //verify that the new credential is listed

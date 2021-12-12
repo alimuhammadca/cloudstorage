@@ -201,6 +201,17 @@
 
         <!--For opening the note modal-->
         <script type="text/javascript">
+            //redirect to last active tab
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+                console.log("tab shown...");
+                localStorage.setItem('activeTab', $(e.target).attr('href'));
+            });
+            var activeTab = localStorage.getItem('activeTab');
+
+            if (activeTab) {
+               $('.nav-tabs a[href="' + activeTab + '"]').tab('show');
+}
+
             // For opening the note modal
             function showNoteModal(noteId, noteTitle, noteDescription) {
                 $('#note-id').val(noteId ? noteId : '');

@@ -84,7 +84,7 @@ public class NoteTests {
         notePage.setNoteDescription("desc 1");
         notePage.clickNoteSubmit();
         delay(1000);
-        homePage.clickNotesTab();
+        //homePage.clickNotesTab();
         delay(1000);
 
         //verify that the new note is listed
@@ -105,7 +105,7 @@ public class NoteTests {
         notePage.clickNoteSubmit();
         delay(1000);
         homePage = new HomePage(webDriver);
-        homePage.clickNotesTab();
+        //homePage.clickNotesTab();
         delay(1000);
 
         //verify that the changes are listed in the notes list
