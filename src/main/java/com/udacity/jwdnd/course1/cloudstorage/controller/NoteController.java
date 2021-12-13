@@ -37,12 +37,14 @@ public class NoteController {
             this.noteService.addNote(note);
         else
             this.noteService.updateNote(note);
-        note.setNoteTitle("");
-        note.setNoteDescription("");
-        model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
-        model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
-        model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
-        return "home";
+//        note.setNoteTitle("");
+//        note.setNoteDescription("");
+//        model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
+//        model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
+//        model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
+//        return "home";
+        model.addAttribute("success", Boolean.TRUE);
+        return "result.html";
     }
 
     @GetMapping("/notes/delete/{noteId}")
@@ -53,9 +55,11 @@ public class NoteController {
         User user = this.userService.getUser(authentication.getName());
         note.setUserId(user.getUserId());
         this.noteService.deleteNote(noteId);
-        model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
-        model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
-        model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
-        return "home";
+//        model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
+//        model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
+//        model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
+//        return "home";
+        model.addAttribute("success", Boolean.TRUE);
+        return "result.html";
     }
 }

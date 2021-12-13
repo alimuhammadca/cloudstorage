@@ -1,9 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
-import com.udacity.jwdnd.course1.cloudstorage.pages.HomePage;
-import com.udacity.jwdnd.course1.cloudstorage.pages.LoginPage;
-import com.udacity.jwdnd.course1.cloudstorage.pages.NotePage;
-import com.udacity.jwdnd.course1.cloudstorage.pages.SignupPage;
+import com.udacity.jwdnd.course1.cloudstorage.pages.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
@@ -11,7 +8,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.openqa.selenium.NoSuchElementException;
-
 import static com.udacity.jwdnd.course1.cloudstorage.Util.delay;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,6 +24,7 @@ public class NoteTests {
     private SignupPage signupPage;
     private NotePage notePage;
     private HomePage homePage;
+    private ResultPage resultPage;
 
     @BeforeAll
     public static void beforeAll() {
@@ -84,7 +81,10 @@ public class NoteTests {
         notePage.setNoteDescription("desc 1");
         notePage.clickNoteSubmit();
         delay(1000);
-        //homePage.clickNotesTab();
+
+        //result page continue
+        resultPage = new ResultPage(webDriver);
+        resultPage.clickSuccessContinue();
         delay(1000);
 
         //verify that the new note is listed
@@ -104,8 +104,10 @@ public class NoteTests {
         notePage.setNoteDescription("desc 2");
         notePage.clickNoteSubmit();
         delay(1000);
-        homePage = new HomePage(webDriver);
-        //homePage.clickNotesTab();
+
+        //result page continue
+        resultPage = new ResultPage(webDriver);
+        resultPage.clickSuccessContinue();
         delay(1000);
 
         //verify that the changes are listed in the notes list
@@ -120,6 +122,11 @@ public class NoteTests {
         //delete the note
         notePage = new NotePage(webDriver);
         notePage.clickNoteDelete();
+        delay(1000);
+
+        //result page continue
+        resultPage = new ResultPage(webDriver);
+        resultPage.clickSuccessContinue();
         delay(1000);
 
         //verify that the note is no longer visible
