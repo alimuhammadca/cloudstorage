@@ -11,6 +11,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SignupTests {
@@ -51,7 +52,7 @@ public class SignupTests {
         signupPage.setPassword("123");
         signupPage.clickSignup();
         int n = SIGNUP_MESSAGE.length();
-        assertEquals(SIGNUP_MESSAGE, signupPage.getSuccessMessage().substring(0, n));
+        assertTrue(signupPage.getSuccessMessage().contains(SIGNUP_MESSAGE));
     }
 
 }

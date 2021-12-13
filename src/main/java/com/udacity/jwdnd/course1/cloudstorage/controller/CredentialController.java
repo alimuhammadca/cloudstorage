@@ -59,7 +59,7 @@ public class CredentialController {
         else
             this.credentialService.updateCredential(credential);
         model.addAttribute("success", Boolean.TRUE);
-        return "result.html";
+        return "result";
     }
 
     @GetMapping("/credentials/delete/{credentialId}")
@@ -70,6 +70,6 @@ public class CredentialController {
         credential.setUserId(user.getUserId());
         this.credentialService.deleteCredential(credentialId);
         model.addAttribute("success", Boolean.TRUE);
-        return "result.html";
+        return "result";
     }
 }

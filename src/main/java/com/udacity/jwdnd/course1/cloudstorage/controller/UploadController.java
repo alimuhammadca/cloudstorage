@@ -62,24 +62,22 @@ public class UploadController {
             java.io.File newFile = new java.io.File("C:\\STORAGE\\" + user.getUsername() + "\\" + fileName);
             if (newFile.exists()) {
                 uploadError = "You already uploaded the file: " + fileName;
-                model.addAttribute("uploadError", uploadError);
-                model.addAttribute("encryptionService", encryptionService);
-                model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
-                model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
-                model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
-                return "home";
+//                model.addAttribute("uploadError", uploadError);
+//                model.addAttribute("encryptionService", encryptionService);
+//                model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
+//                model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
+//                model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
+//                return "home";
+                model.addAttribute("errorMessage", uploadError);
+                model.addAttribute("error", Boolean.TRUE);
+                return "result";
             }
             fos = new FileOutputStream(newFile);
             is = fileUpload.getInputStream();
             while((read = is.read(bytes))!=-1) {
                 fos.write(bytes, 0, read);
             }
-            //try {
-                file.setFileData(bytes);
-            //} catch (SQLException e) {
-            //    uploadError = e.getMessage();
-            //    e.printStackTrace();
-            //}
+            file.setFileData(bytes);
             file.setFileName(fileUpload.getOriginalFilename());
             file.setFileSize(newFile.length()+"");
             file.setUserId(user.getUserId());
@@ -88,6 +86,10 @@ public class UploadController {
             fileService.addFile(file);
         } catch (IOException e) {
             e.printStackTrace();
+            uploadError = e.getMessage();
+            model.addAttribute("errorMessage", uploadError);
+            model.addAttribute("error", Boolean.TRUE);
+            return "result";
         } finally {
             try {
                 if (is != null) is.close();
@@ -95,14 +97,20 @@ public class UploadController {
             } catch (IOException e) {
                 uploadError = e.getMessage();
                 e.printStackTrace();
+                model.addAttribute("errorMessage", uploadError);
+                model.addAttribute("error", Boolean.TRUE);
+                return "result";
             }
         }
-        model.addAttribute("uploadError", uploadError);
-        model.addAttribute("encryptionService", encryptionService);
-        model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
-        model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
-        model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
-        return "home";
+//        model.addAttribute("uploadError", uploadError);
+//        model.addAttribute("encryptionService", encryptionService);
+//        model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
+//        model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
+//        model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
+//        return "home";
+        model.addAttribute("errorMessage", uploadError);
+        model.addAttribute("success", Boolean.TRUE);
+        return "result";
     }
 
     @GetMapping("/files/delete/{fileId}")
@@ -110,17 +118,20 @@ public class UploadController {
                                     Authentication authentication,
                                     File file, Note note,
                                     Credential credential, Model model) {
+        String errorMessage = "Failed to delete the file.";
         User user = this.userService.getUser(authentication.getName());
         String fileName = fileService.getFile(fileId).getFileName();
         java.io.File newFile = new java.io.File("C:\\STORAGE\\" + user.getUsername() + "\\" + fileName);
-        boolean done = newFile.delete();
-        if (done) {
+        try {
+            Files.deleteIfExists(newFile.toPath());
             this.fileService.deleteFile(fileId);
+        } catch (IOException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("error", Boolean.TRUE);
+            return "result";
         }
-        model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
-        model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
-        model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
-        return "home";
+        model.addAttribute("success", Boolean.TRUE);
+        return "result";
     }
 
     @GetMapping("/files/view/{fileId}")
