@@ -14,7 +14,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.FileOutputStream;
@@ -49,6 +51,9 @@ public class UploadController {
 
     @PostMapping("/file-upload")
     public String uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload, Authentication authentication, File file, Note note, Credential credential, Model model) {
+        if((fileUpload.getSize() > 1000000)) {
+            throw new MaxUploadSizeExceededException(fileUpload.getSize());
+        }
         String uploadError = null;
         User user = this.userService.getUser(authentication.getName());
         String fileName = fileUpload.getOriginalFilename();
@@ -62,24 +67,18 @@ public class UploadController {
             java.io.File newFile = new java.io.File("C:\\STORAGE\\" + user.getUsername() + "\\" + fileName);
             if (newFile.exists()) {
                 uploadError = "You already uploaded the file: " + fileName;
-//                model.addAttribute("uploadError", uploadError);
-//                model.addAttribute("encryptionService", encryptionService);
-//                model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
-//                model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
-//                model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
-//                return "home";
                 model.addAttribute("errorMessage", uploadError);
                 model.addAttribute("error", Boolean.TRUE);
                 return "result";
             }
             fos = new FileOutputStream(newFile);
             is = fileUpload.getInputStream();
-            while((read = is.read(bytes))!=-1) {
+            while ((read = is.read(bytes)) != -1) {
                 fos.write(bytes, 0, read);
             }
             file.setFileData(bytes);
             file.setFileName(fileUpload.getOriginalFilename());
-            file.setFileSize(newFile.length()+"");
+            file.setFileSize(newFile.length() + "");
             file.setUserId(user.getUserId());
             URLConnection connection = newFile.toURL().openConnection();
             file.setContentType(connection.getContentType());
@@ -102,12 +101,6 @@ public class UploadController {
                 return "result";
             }
         }
-//        model.addAttribute("uploadError", uploadError);
-//        model.addAttribute("encryptionService", encryptionService);
-//        model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
-//        model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
-//        model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
-//        return "home";
         model.addAttribute("errorMessage", uploadError);
         model.addAttribute("success", Boolean.TRUE);
         return "result";
@@ -156,5 +149,13 @@ public class UploadController {
                 .contentLength(newFile.length())
                 .contentType(MediaType.parseMediaType(fileService.getFile(fileId).getContentType()))
                 .body(resource);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public String handleFileSizeExceededError(RedirectAttributes redirectAttributes){
+        String uploadError = "ERROR: File size exceeded the limit of 5MB";
+        redirectAttributes.addAttribute("errorMessage", uploadError);
+        redirectAttributes.addAttribute("error", Boolean.TRUE);
+        return "result";
     }
 }

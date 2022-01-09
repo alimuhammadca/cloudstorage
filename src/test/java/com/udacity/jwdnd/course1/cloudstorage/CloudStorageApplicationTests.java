@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
+import com.udacity.jwdnd.course1.cloudstorage.pages.HomePage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
@@ -114,8 +115,8 @@ class CloudStorageApplicationTests {
 		loginPassword.click();
 		loginPassword.sendKeys(password);
 
-		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("login-button")));
-		WebElement loginButton = driver.findElement(By.id("login-button"));
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("loginButton")));
+		WebElement loginButton = driver.findElement(By.id("loginButton"));
 		loginButton.click();
 
 		webDriverWait.until(ExpectedConditions.titleContains("Home"));
@@ -162,7 +163,9 @@ class CloudStorageApplicationTests {
 
 		// Try to access a random made-up URL.
 		driver.get("http://localhost:" + this.port + "/some-random-page");
-		Assertions.assertFalse(driver.getPageSource().contains("Whitelabel Error Page"));
+
+		Assertions.assertTrue(driver.getPageSource().contains("Something went wrong!"));
+		//Assertions.assertFalse(driver.getPageSource().contains("Whitelabel Error Page"));
 	}
 
 
@@ -192,6 +195,9 @@ class CloudStorageApplicationTests {
 		WebElement fileSelectButton = driver.findElement(By.id("fileUpload"));
 		fileSelectButton.sendKeys(new File(fileName).getAbsolutePath());
 
+		HomePage homePage = new HomePage(driver);
+		homePage.clickFilesTab();
+
 		WebElement uploadButton = driver.findElement(By.id("uploadButton"));
 		uploadButton.click();
 		try {
@@ -200,8 +206,5 @@ class CloudStorageApplicationTests {
 			System.out.println("Large File upload failed");
 		}
 		Assertions.assertFalse(driver.getPageSource().contains("HTTP Status 403 – Forbidden"));
-
 	}
-
-
 }
