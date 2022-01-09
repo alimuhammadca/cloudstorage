@@ -51,10 +51,13 @@ public class UploadController {
 
     @PostMapping("/file-upload")
     public String uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload, Authentication authentication, File file, Note note, Credential credential, Model model) {
-        if((fileUpload.getSize() > 1000000)) {
-            throw new MaxUploadSizeExceededException(fileUpload.getSize());
-        }
         String uploadError = null;
+        if((fileUpload.getSize() > 1000000)) {
+            uploadError = "File size exceed limit!";
+            model.addAttribute("errorMessage", uploadError);
+            model.addAttribute("error", Boolean.TRUE);
+            return "result";
+        }
         User user = this.userService.getUser(authentication.getName());
         String fileName = fileUpload.getOriginalFilename();
         final byte[] bytes = new byte[1024];
