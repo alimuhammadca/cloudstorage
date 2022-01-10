@@ -35,7 +35,7 @@ public class CredentialController {
     }
 
     @PostMapping("/credentials/update")
-    public String postNoteMessage(Authentication authentication, Note note, Credential credential, Model model) {
+    public String postCredentials(Authentication authentication, Note note, Credential credential, Model model) {
         User user = this.userService.getUser(authentication.getName());
         credential.setUserId(user.getUserId());
 

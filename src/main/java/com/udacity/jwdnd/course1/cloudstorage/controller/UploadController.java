@@ -31,6 +31,9 @@ import java.sql.SQLException;
 
 @Controller
 public class UploadController {
+
+    private static final String ROOT_LOCATION = System.getProperty("java.io.tmpdir") + java.io.File.separator;
+
     private NoteService noteService;
     private CredentialService credentialService;
     private EncryptionService encryptionService;
@@ -50,7 +53,8 @@ public class UploadController {
     }
 
     @PostMapping("/file-upload")
-    public String uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload, Authentication authentication, File file, Note note, Credential credential, Model model) {
+    public String uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload, Authentication authentication,
+                             File file, Note note, Credential credential, Model model) {
         String uploadError = null;
         if((fileUpload.getSize() > 1000000)) {
             uploadError = "File size exceed limit!";
@@ -65,9 +69,9 @@ public class UploadController {
         InputStream is = null;
         FileOutputStream fos = null;
         try {
-            java.io.File path = new java.io.File("C:\\STORAGE\\" + user.getUsername());
+            java.io.File path = new java.io.File( ROOT_LOCATION + user.getUsername());
             if (!path.exists()) path.mkdir();
-            java.io.File newFile = new java.io.File("C:\\STORAGE\\" + user.getUsername() + "\\" + fileName);
+            java.io.File newFile = new java.io.File(ROOT_LOCATION + user.getUsername() + java.io.File.separator + fileName);
             if (newFile.exists()) {
                 uploadError = "You already uploaded the file: " + fileName;
                 model.addAttribute("errorMessage", uploadError);
@@ -117,7 +121,7 @@ public class UploadController {
         String errorMessage = "Failed to delete the file.";
         User user = this.userService.getUser(authentication.getName());
         String fileName = fileService.getFile(fileId).getFileName();
-        java.io.File newFile = new java.io.File("C:\\STORAGE\\" + user.getUsername() + "\\" + fileName);
+        java.io.File newFile = new java.io.File(ROOT_LOCATION + user.getUsername() + java.io.File.separator + fileName);
         try {
             Files.deleteIfExists(newFile.toPath());
             this.fileService.deleteFile(fileId);
@@ -138,7 +142,7 @@ public class UploadController {
     {
         User user = this.userService.getUser(authentication.getName());
         String fileName = fileService.getFile(fileId).getFileName();
-        java.io.File newFile = new java.io.File("C:\\STORAGE\\" + user.getUsername() + "\\" + fileName);
+        java.io.File newFile = new java.io.File(ROOT_LOCATION + user.getUsername() + java.io.File.separator + fileName);
 
         HttpHeaders header = new HttpHeaders();
         header.add(HttpHeaders.CONTENT_DISPOSITION, "inline;filename="+file.getFileName());
